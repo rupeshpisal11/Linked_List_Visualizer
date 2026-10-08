@@ -535,6 +535,9 @@ svg.links{position:absolute;inset:0;overflow:visible;pointer-events:none}
   margin-top: 2px;
   letter-spacing: 0.3px;
 }
+.author strong {
+  font-weight: 700;
+}
 
 /* ---------- additions ---------- */
 .ll-node.clickable{cursor:pointer}
