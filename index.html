@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Linked List Visualizer · Interactive Learning Lab</title>
+<meta name="description" content="Learn linked lists visually: step-by-step animations for insertion, deletion, search, traversal and reversal, with code highlighting, practice challenges and quizzes." />
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="#" data-view="visualizer">
+    <span class="brand-mark">⛓</span>
+    <span class="brand-text">Linked List <b>Visualizer</b></span>
+  </a>
+  <nav class="view-nav" id="viewNav">
+    <button class="nav-btn active" data-view="visualizer">Visualizer</button>
+    <button class="nav-btn" data-view="practice">Practice</button>
+    <button class="nav-btn" data-view="quiz">Quiz</button>
+    <button class="nav-btn" data-view="compare">Compare</button>
+  </nav>
+  <div class="top-actions">
+    <button class="icon-btn" id="themeBtn" title="Toggle dark / light mode" aria-label="Toggle theme"><span id="themeIcon">◐</span></button>
+    <button class="progress-chip" id="progressBtn">
+      <span class="mini-bar"><i id="progressMiniBar"></i></span>
+      Progress <b id="progressPct">0%</b>
+    </button>
+  </div>
+</header>
+
+<div class="layout">
+
+  <aside class="sidebar" id="sidebar">
+
+    <div class="panel">
+      <h5>Linked list type</h5>
+      <div class="seg" id="typeSeg">
+        <button data-type="singly" class="active">Singly</button>
+        <button data-type="doubly">Doubly</button>
+        <button data-type="circular">Circular</button>
+      </div>
+      <p class="panel-note" id="typeNote">Each node stores <b>Data | Next</b>. The last node points to NULL.</p>
+    </div>
+
+    <div class="panel">
+      <h5>Create &amp; Insert</h5>
+      <div class="field-row">
+        <input id="inpValue" type="text" placeholder="Value (e.g. 15 or 5,8,13)" autocomplete="off" />
+        <input id="inpPos" type="text" placeholder="Pos" autocomplete="off" />
+      </div>
+      <div class="btn-grid">
+        <button class="btn" id="btnAdd">＋ Add node</button>
+        <button class="btn" id="btnInsBegin">Insert start</button>
+        <button class="btn" id="btnInsEnd">Insert end</button>
+        <button class="btn" id="btnInsPos">Insert pos</button>
+        <button class="btn" id="btnRandom">Random list</button>
+        <button class="btn danger-ghost" id="btnClear">Clear</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h5>Delete</h5>
+      <div class="btn-grid three">
+        <button class="btn" id="btnDelBegin">Delete start</button>
+        <button class="btn" id="btnDelEnd">Delete end</button>
+        <button class="btn" id="btnDelPos">Delete pos</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h5>Search &amp; Traverse</h5>
+      <div class="field-row">
+        <input id="inpSearch" type="text" placeholder="Value (e.g. 30)" autocomplete="off" />
+        <button class="btn primary" id="btnSearch">Search</button>
+      </div>
+      <div class="btn-grid">
+        <button class="btn" id="btnTraverse">▶ Traverse</button>
+        <button class="btn" id="btnTraverseRev">◀ Reverse trav.</button>
+        <button class="btn wide" id="btnReverse">⇄ Reverse list</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h5>Tools</h5>
+      <div class="btn-grid">
+        <button class="btn" id="btnUndo">↩ Undo</button>
+        <button class="btn" id="btnRedo">↪ Redo</button>
+        <button class="btn wide" id="btnMemory">▦ Memory view</button>
+      </div>
+      <p class="panel-note">Max 12 nodes · everything runs inside your browser, no login needed.</p>
+    </div>
+
+  </aside>
+
+  <main class="main">
+
+    <section class="view active" id="view-visualizer">
+
+      <div class="card stage-card">
+        <div class="stage-top">
+          <div class="stage-title">
+            <h2 id="listInfo">Singly Linked List</h2>
+            <span class="pill" id="nodeCount">3 nodes</span>
+          </div>
+          <div class="regs" id="regs"></div>
+          <div class="step-count" id="stepCounter">Ready</div>
+        </div>
+
+        <div class="stage" id="stage" aria-label="Linked list visualization"></div>
+
+        <div class="status-line" id="statusLine">Pick an operation on the left to watch it happen, one step at a time.</div>
+
+        <div class="playbar" id="playbar">
+          <button class="pbtn" id="btnRestart" title="Restart">⟲ <span>Restart</span></button>
+          <button class="pbtn" id="btnPrev" title="Previous step">‹ <span>Prev</span></button>
+          <button class="pbtn primary" id="btnPlay" title="Play / Pause">▶ <span>Play</span></button>
+          <button class="pbtn" id="btnNext" title="Next step"><span>Next</span> ›</button>
+          <button class="pbtn" id="btnSkip" title="Jump to the final result"><span>Skip to result</span> »</button>
+          <label class="speed">Speed
+            <input type="range" id="speed" min="0.25" max="3" step="0.25" value="1" />
+            <b id="speedVal">1×</b>
+          </label>
+        </div>
+        <p class="step-hint">Step mode: use <b>Prev</b> / <b>Next</b> to walk through the algorithm at your own pace.</p>
+      </div>
+
+      <div class="explain-grid">
+        <div class="card explain c1">
+          <h4><span class="dot"></span>What are we doing?</h4>
+          <p id="exWhat">Build a linked list and run operations on it to see how nodes and pointers behave.</p>
+        </div>
+        <div class="card explain c2">
+          <h4><span class="dot"></span>What is happening?</h4>
+          <p id="exDoing">Nothing is running yet — press an operation button, then use Next / Play.</p>
+        </div>
+        <div class="card explain c3">
+          <h4><span class="dot"></span>Why?</h4>
+          <p id="exWhy">Pointers must always be updated in the right order, otherwise part of the list is lost.</p>
+        </div>
+      </div>
+
+      <div class="lower-grid">
+        <div class="card code-card">
+          <div class="card-head">
+            <h4>Code</h4>
+            <div class="tabs" id="codeTabs">
+              <button class="tab active" data-lang="cpp">C++</button>
+              <button class="tab" data-lang="java">Java</button>
+              <button class="tab" data-lang="py">Python</button>
+              <button class="tab" data-lang="pseudo">Pseudocode</button>
+            </div>
+          </div>
+          <pre class="code" id="codeBlock"><code>Choose an operation — the running line will be highlighted here.</code></pre>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><h4>Complexity</h4></div>
+          <div class="table-wrap">
+            <table class="cx-table">
+              <thead><tr><th>Operation</th><th>Time</th><th>Space</th></tr></thead>
+              <tbody id="cxBody"></tbody>
+            </table>
+          </div>
+          <p class="cx-note" id="cxNote"></p>
+        </div>
+      </div>
+
+      <div class="card memory-card hidden" id="memoryCard">
+        <div class="card-head">
+          <h4>Memory view</h4>
+          <span class="muted">Nodes live at scattered addresses — the links, not the location, define the list.</span>
+        </div>
+        <div class="table-wrap">
+          <table class="mem-table">
+            <thead><tr><th>Address</th><th>Data</th><th>Next</th><th>Prev</th></tr></thead>
+            <tbody id="memoryBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <section class="view" id="view-practice">
+      <div class="card">
+        <div class="card-head">
+          <h2>Practice challenges</h2>
+          <span class="muted" id="practiceScore">0 / 4 completed</span>
+        </div>
+        <div class="chips" id="practiceTabs"></div>
+        <div class="practice-grid">
+          <div class="practice-main">
+            <div class="task" id="practiceTask"></div>
+            <div class="stage small" id="practiceStage"></div>
+            <div class="answer-row" id="answerRow"></div>
+            <div class="btn-row">
+              <button class="btn primary" id="btnCheck">Check answer</button>
+              <button class="btn" id="btnHint">Hint</button>
+              <button class="btn ghost" id="btnResetPractice">Reset</button>
+            </div>
+            <div class="feedback" id="practiceFeedback"></div>
+          </div>
+          <div class="practice-side card inner">
+            <h4>How it works</h4>
+            <ul class="tips">
+              <li>Read the challenge, then click directly on the visualization.</li>
+              <li>Green = correct choice, red = try again with a fresh idea.</li>
+              <li><b>Check answer</b> verifies your choice, <b>Hint</b> explains the rule without giving it away.</li>
+            </ul>
+            <div class="challenge-progress" id="challengeProgress"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-quiz">
+      <div class="card">
+        <div class="card-head">
+          <h2>Quiz</h2>
+          <span class="muted" id="quizScore">Score 0 · Best 0</span>
+        </div>
+        <div class="quiz-progress"><i id="quizBar"></i></div>
+        <div id="quizBody"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-compare">
+      <div class="card">
+        <div class="card-head">
+          <h2>Array vs Linked list</h2>
+          <div class="btn-row">
+            <button class="btn" id="cmpInsert">Insert 5 at front</button>
+            <button class="btn" id="cmpDelete">Delete front</button>
+            <button class="btn ghost" id="cmpReset">Reset</button>
+          </div>
+        </div>
+        <div class="cmp-grid">
+          <div class="cmp-panel">
+            <h4>Array <span class="cost" id="cmpArrCost">contiguous memory</span></h4>
+            <div class="arr-row" id="cmpArr"></div>
+            <p class="cmp-msg" id="cmpArrMsg">Fixed cells side by side — index <b>i</b> is always <b>base + i × size</b>.</p>
+          </div>
+          <div class="cmp-panel">
+            <h4>Linked list <span class="cost" id="cmpLlCost">scattered memory</span></h4>
+            <div class="ll-mock" id="cmpLl"></div>
+            <p class="cmp-msg" id="cmpLlMsg">Nodes can sit anywhere — each node carries the address of the next one.</p>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="cmp-table" id="cmpTable"></table>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div class="modal hidden" id="progressModal">
+  <div class="modal-card">
+    <div class="card-head">
+      <h3>Learning progress</h3>
+      <button class="icon-btn" id="btnCloseProgress" aria-label="Close">✕</button>
+    </div>
+    <div class="big-bar"><i id="progressBigBar"></i></div>
+    <div class="progress-pct" id="progressBigPct">0%</div>
+    <div class="stats" id="progressStats"></div>
+    <div class="op-list" id="progressOps"></div>
+    <div class="btn-row right">
+      <button class="btn ghost" id="btnResetProgress">Reset progress</button>
+    </div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<script src="js/linked-list.js"></script>
+<script src="js/code.js"></script>
+<script src="js/operations.js"></script>
+<script src="js/visualizer.js"></script>
+<script src="js/animations.js"></script>
+<script src="js/quiz.js"></script>
+<script src="js/practice.js"></script>
+<script src="js/compare.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
